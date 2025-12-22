@@ -14,5 +14,5 @@ pub mod spatial;
 pub mod utils;
 pub mod world;
 
-pub use core::{Batch, BlockId, Lod, MaxDepth, TraversalDepth, VoxelTrait};
+pub use core::{Batch, BlockId, ByteConversion, Lod, MaxDepth, TraversalDepth, VoxelTrait};
 pub use interner::VoxInterner;
