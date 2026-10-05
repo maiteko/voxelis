@@ -1,7 +1,7 @@
+use crate::interner::MAX_CHILDREN;
+use ordered_float::{NotNan, OrderedFloat};
 use std::fmt::{Debug, Display};
 use std::hash::Hash;
-
-use crate::interner::MAX_CHILDREN;
 
 pub trait ByteConversion: Sized {
     type ByteArray: AsRef<[u8]> + AsMut<[u8]> + Default;
@@ -74,7 +74,40 @@ macro_rules! impl_byte_conversion {
     };
 }
 
-impl_byte_conversion!(u8, i8, u16, i16, half::f16, u32, i32, f32, u64, i64, f64);
+impl_byte_conversion!(u8, i8, u16, i16, half::f16, u32, i32, f32, u64, i64);
+
+macro_rules! impl_byte_conversion_float {
+    ($($t:ty),+) => {
+        $(
+            #[cfg(feature = "numeric_voxel_impls")]
+            impl ByteConversion for OrderedFloat<$t> {
+                type ByteArray = [u8; std::mem::size_of::<Self>()];
+
+                #[inline(always)]
+                fn to_be_bytes(&self) -> Self::ByteArray {
+                    <$t>::to_be_bytes(**self)
+                }
+
+                #[inline(always)]
+                fn to_le_bytes(&self) -> Self::ByteArray {
+                    <$t>::to_le_bytes(**self)
+                }
+
+                #[inline(always)]
+                fn from_be_bytes(bytes: Self::ByteArray) -> Self {
+                    <$t>::from_be_bytes(bytes).into()
+                }
+
+                #[inline(always)]
+                fn from_le_bytes(bytes: Self::ByteArray) -> Self {
+                    <$t>::from_le_bytes(bytes).into()
+                }
+            }
+        )+
+    };
+}
+
+impl_byte_conversion_float!(half::f16, f32, f64);
 
 macro_rules! impl_voxel_trait_for_numerics {
     ($($t:ty),+) => {
