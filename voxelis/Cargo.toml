@@ -41,6 +41,7 @@ byteorder = { workspace = true, optional = true }
 md-5 = { workspace = true, optional = true }
 tracy-client = { workspace = true, optional = true }
 zstd = { workspace = true, optional = true }
+half = "2.7.1"
 
 [dev-dependencies]
 criterion2 = { version = "3.0" }
