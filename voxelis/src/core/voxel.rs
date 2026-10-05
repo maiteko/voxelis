@@ -1,5 +1,6 @@
 use crate::interner::MAX_CHILDREN;
-use ordered_float::{NotNan, OrderedFloat};
+use num_traits::cast::AsPrimitive;
+use ordered_float::OrderedFloat;
 use std::fmt::{Debug, Display};
 use std::hash::Hash;
 
@@ -74,7 +75,7 @@ macro_rules! impl_byte_conversion {
     };
 }
 
-impl_byte_conversion!(u8, i8, u16, i16, half::f16, u32, i32, f32, u64, i64);
+impl_byte_conversion!(u8, i8, u16, i16, u32, i32, f32, u64, i64);
 
 macro_rules! impl_byte_conversion_float {
     ($($t:ty),+) => {
@@ -107,7 +108,7 @@ macro_rules! impl_byte_conversion_float {
     };
 }
 
-impl_byte_conversion_float!(half::f16, f32, f64);
+impl_byte_conversion_float!(f32, f64);
 
 macro_rules! impl_voxel_trait_for_numerics {
     ($($t:ty),+) => {
@@ -124,6 +125,22 @@ macro_rules! impl_voxel_trait_for_numerics {
 }
 
 impl_voxel_trait_for_numerics!(u8, i8, u16, i16, u32, i32, u64, i64);
+
+macro_rules! impl_voxel_trait_for_floats{
+    ($($t:ty),+) => {
+        $(
+            #[cfg(feature = "numeric_voxel_impls")]
+            impl VoxelTrait for OrderedFloat<$t> {
+                #[inline(always)]
+                fn material_id(&self) -> usize {
+                    self.as_()
+                }
+            }
+        )+
+    };
+}
+
+impl_voxel_trait_for_floats!(f32, f64);
 
 #[inline(always)]
 pub fn calc_average<T>(children: &[T]) -> T

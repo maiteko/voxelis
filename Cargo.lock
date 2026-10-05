@@ -2811,7 +2811,6 @@ checksum = "6ea2d84b969582b4b1864a92dc5d27cd2b77b622a8d79306834f1be5ba20d84b"
 dependencies = [
  "cfg-if",
  "crunchy",
- "num-traits",
  "zerocopy",
 ]
 
@@ -5291,8 +5290,8 @@ dependencies = [
  "criterion2",
  "fastnoise-lite",
  "glam 0.32.1",
- "half",
  "md-5",
+ "num-traits",
  "ordered-float 5.4.0",
  "parking_lot",
  "rand 0.9.2",
